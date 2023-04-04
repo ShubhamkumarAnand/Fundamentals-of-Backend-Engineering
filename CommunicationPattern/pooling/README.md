@@ -1,22 +1,41 @@
-# Pooling
+# Pooling 
 
-### Features
+- Server is taking too much time can you check after sometime?
+    eg.Youtube Video Upload
+       User Logged In
 
-- Client wants a real time notification
-- When the Client doesn't have to request the data constantly
-- Connection must be Bidirectional
-- Data send by the server just Client must be alive
-- Used by the RabbitMQ
-- gRPC supports the push from the server
+## Short Pooling
 
-eg. Most Notification service
+- A client send a request 
+- Server Process the request and immediatly response with an id: **RequestID**
+- Client can check the progress by requesting the info
+- Server can send the progress 
+- When the task is finished the server can respond if the client asks
 
-**Pros**
+> **Pros**
+  
+  - Simple 
+  - Good for long runnig task 
+  - client can disconnect
+  
+> **Cons**
 
-  - Real time
+  - Too Chatty (NOT good if the system has Multiple task running and backend responds with each users)
+  - Not Optimal for the Backend 
+  - Bandwidth will get down
+  
 
-**Cons**
+## Long Pooling
 
-  - Client must be online
-  - Might not able to handle the request continuously (Kafka log Pooling)
-  - Light Client Pooling
+> Request is taking long, i'll check with you later But talk to me only when it's ready
+
+- Same as Short pooling but the server DOES not respond until the RESPONSE is done.
+- Kafka uses this service 
+
+- Only cons: it's not real time
+
+```bash
+  curl -X POST http://localhost:8080/submit
+  
+  curl http://localhost:8080/checkstatus?jobId=job:12321232
+```
